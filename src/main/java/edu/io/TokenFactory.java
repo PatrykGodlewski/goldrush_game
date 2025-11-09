@@ -1,3 +1,5 @@
+package src.main.java.edu.io;
+
 public class TokenFactory {
     private int counter = 0;
 

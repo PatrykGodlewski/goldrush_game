@@ -1,9 +1,11 @@
+package src.main.java.edu.io;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Board {
     private final int size;
-    private Token[][] grid;
+    private final Token[][] grid;
 
     public Board(int size) {
         this.size = size;

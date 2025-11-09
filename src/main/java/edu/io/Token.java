@@ -1,3 +1,5 @@
+package src.main.java.edu.io;
+
 public class Token {
     private final int id;
     private final String label;
@@ -7,8 +9,13 @@ public class Token {
         this.label = label;
     }
 
-    public int getId() { return id; }
-    public String getLabel() { return label; }
+    public int getId() {
+        return id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 
     @Override
     public String toString() {

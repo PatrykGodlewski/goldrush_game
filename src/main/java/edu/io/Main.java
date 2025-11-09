@@ -1,7 +1,8 @@
-package edu.io;
+package src.main.java.edu.io;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("Gold Rush");
+        Game.run();
     }
 }
