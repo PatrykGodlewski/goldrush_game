@@ -1,4 +1,4 @@
-package src.main.java.edu.io;
+package edu.io;
 
 public class TokenFactory {
     private int counter = 0;
