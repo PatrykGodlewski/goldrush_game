@@ -1,0 +1,40 @@
+sequenceDiagram
+    autonumber
+    actor User as Użytkownik / Controls
+    participant PT as PlayerToken
+    participant B as Board
+    participant P as Player
+    participant GT as GoldToken (na planszy)
+
+    User->>PT: move(direction)
+    activate PT
+
+    Note right of PT: 1. Obliczenie nowych współrzędnych
+
+    PT->>B: peekToken(newCoords)
+    activate B
+    B-->>PT: targetToken (GoldToken)
+    deactivate B
+
+    Note right of PT: 2. Delegacja interakcji do Gracza
+
+    PT->>P: interactWithToken(targetToken)
+    activate P
+
+    Note right of P: 3. Sprawdzenie typu (instanceof GoldToken)
+
+    P->>GT: amount()
+    activate GT
+    GT-->>P: value (np. 5.0)
+    deactivate GT
+
+    P->>P: gainGold(value)
+
+    deactivate P
+
+    Note right of PT: 4. Aktualizacja pozycji na planszy
+
+    PT->>B: placeToken(currentCoords, EmptyToken)
+    PT->>B: placeToken(newCoords, this)
+
+    deactivate PT
