@@ -10,45 +10,63 @@ public class Board {
     private final int size;
     private final Token[][] grid;
 
+    private PlacementStrategy placementStrategy;
+
     public Board() {
         this.size = 6;
         grid = new Token[size][size];
+
+        this.placementStrategy = new SequentialPlacementStrategy();
+
         clean();
     }
 
-    public record Coords(int col, int row){
+    public void setPlacementStrategy(PlacementStrategy placementStrategy) {
+        this.placementStrategy = placementStrategy;
     }
 
-    public int size(){
+    public int size() {
         return size;
     }
 
     public void clean() {
-        Token token = new EmptyToken();
-
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                placeToken(col, row, token);
+                placeToken(new Coords(col, row), new EmptyToken());
             }
         }
+    }
 
-    };
+    public void placeToken(Board.Coords coords, Token token) {
+        grid[coords.row()][coords.col()] = token;
+    }
 
+    public Token peekToken(Board.Coords coords) {
+        return grid[coords.row()][coords.col()];
+    }
+
+    // --- (Legacy Support for Tests) ---
     public void placeToken(int col, int row, Token token) {
-        grid[row][col] = token;
-    };
-
+        placeToken(new Coords(col, row), token);
+    }
 
     public Token peekToken(int col, int row) {
-        return grid[row][col];
-    };
+        return peekToken(new Coords(col, row));
+    }
+    // ----------------------------------
+
+    public Coords getAvailableSquare() {
+        return placementStrategy.determinePosition(this);
+    }
 
     public String display() {
-        // Probably should use JPanel here
         return Arrays.stream(grid)
                 .map(row -> Arrays.stream(row)
                         .map(Token::label)
                         .collect(Collectors.joining(" ")))
                 .collect(Collectors.joining("\n"));
+    }
+
+    public record Coords(int col, int row) {
     }
 }

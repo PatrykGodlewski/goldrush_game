@@ -1,26 +1,63 @@
 package edu.io;
 
+import edu.io.token.GoldToken;
+import edu.io.token.PlayerToken;
+import edu.io.token.PyriteToken;
+
 import javax.swing.*;
+import java.awt.*;
 
 public class Game {
+    private final Board board;
+    private Player player;
 
-    public static void run() {
+    public Game() {
+        this.board = new Board();
+        board.setPlacementStrategy(new RandomPlacementStrategy());
+        initializeBoard();
+    }
+
+    public void join(Player player) {
+        this.player = player;
+        new PlayerToken(player, board);
+    }
+
+    public void start() {
+        if (player == null) {
+            throw new IllegalStateException("Nie można rozpocząć gry bez gracza! Użyj metody join().");
+        }
+
         System.out.println("Game is on!");
-        Board board = new Board();
+        createAndShowGUI();
+    }
 
-        // Create frame
-        JFrame frame = new JFrame("Board Display");
+    private void createAndShowGUI() {
+        JFrame frame = new JFrame("Gold Rush");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(600, 450);
 
-        JLabel label = new JLabel("<html><pre>" + board.display() + "</pre></html>", SwingConstants.CENTER);
-        frame.add(label);
+        JLabel scoreLabel = new JLabel("Gold: " + player.gold(), SwingConstants.CENTER);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        frame.add(scoreLabel, BorderLayout.NORTH);
+
+        JLabel boardLabel = new JLabel("<html><pre>" + board.display() + "</pre></html>", SwingConstants.CENTER);
+        frame.add(boardLabel, BorderLayout.CENTER);
+
+        JPanel contentPane = (JPanel) frame.getContentPane();
+        new Controls(contentPane, player.token());
+
         frame.setVisible(true);
 
-        new Thread(() -> {
-            while (true) {
-                label.setText("<html><pre>" + board.display() + "</pre></html>");
-            }
-        }).start();
+        Timer refreshTimer = new Timer(50, e -> {
+            boardLabel.setText("<html><pre>" + board.display() + "</pre></html>");
+            scoreLabel.setText("Gold: " + player.gold());
+        });
+        refreshTimer.start();
+    }
+
+    private void initializeBoard() {
+        board.placeToken(board.getAvailableSquare(), new GoldToken(5.0));
+        board.placeToken(board.getAvailableSquare(), new GoldToken(1.0));
+        board.placeToken(board.getAvailableSquare(), new PyriteToken());
     }
 }

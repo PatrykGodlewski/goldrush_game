@@ -1,56 +1,57 @@
 package edu.io.token;
 
 import edu.io.Board;
+import edu.io.Player;
 
 public class PlayerToken extends Token {
-    Board board;
-    int col = 0;
-    int row = 0;
+    private final Board board;
+    private final Player player;
+    private Board.Coords currentCoords;
 
     public PlayerToken(Board board) {
+        this(new Player(), board);
+    }
+
+    public PlayerToken(Player player, Board board) {
         super(Label.PLAYER_TOKEN_LABEL);
         this.board = board;
+        this.player = player;
 
-        this.col = 1;
-        this.row = 1;
-        board.placeToken(col, row, this);
+        this.player.assignToken(this);
+
+        this.currentCoords = board.getAvailableSquare();
+        board.placeToken(this.currentCoords, this);
     }
 
     public Board.Coords pos() {
-        return new Board.Coords(col, row);
+        return currentCoords;
     }
 
     public void move(Move dir) {
         if (dir == Move.NONE) return;
 
-        int newCol = col;
-        int newRow = row;
+        int newCol = currentCoords.col();
+        int newRow = currentCoords.row();
 
         switch (dir) {
-            case UP:
-                newRow--;
-                break;
-            case DOWN:
-                newRow++;
-                break;
-            case LEFT:
-                newCol--;
-                break;
-            case RIGHT:
-                newCol++;
-                break;
+            case UP -> newRow--;
+            case DOWN -> newRow++;
+            case LEFT -> newCol--;
+            case RIGHT -> newCol++;
         }
 
         if (newCol < 0 || newRow < 0 || newCol >= board.size() || newRow >= board.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Cannot move outside board boundaries");
         }
 
-        board.placeToken(col, row, new EmptyToken());
+        Board.Coords newCoords = new Board.Coords(newCol, newRow);
 
-        this.col = newCol;
-        this.row = newRow;
+        Token targetToken = board.peekToken(newCoords);
+        player.interactWithToken(targetToken);
 
-        board.placeToken(col, row, this);
+        board.placeToken(currentCoords, new EmptyToken());
+        this.currentCoords = newCoords;
+        board.placeToken(currentCoords, this);
     }
 
     public enum Move {
