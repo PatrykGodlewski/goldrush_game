@@ -13,7 +13,7 @@ public class Board {
     private PlacementStrategy placementStrategy;
 
     public Board() {
-        this.size = 6;
+        this.size = 12;
         grid = new Token[size][size];
 
         this.placementStrategy = new SequentialPlacementStrategy();
