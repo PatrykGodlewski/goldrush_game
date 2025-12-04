@@ -4,6 +4,7 @@ import edu.io.token.EmptyToken;
 import edu.io.token.Token;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Board {
@@ -13,7 +14,7 @@ public class Board {
     private PlacementStrategy placementStrategy;
 
     public Board() {
-        this.size = 12;
+        this.size = 18;
         grid = new Token[size][size];
 
         this.placementStrategy = new SequentialPlacementStrategy();
@@ -38,6 +39,7 @@ public class Board {
     }
 
     public void placeToken(Board.Coords coords, Token token) {
+        Objects.requireNonNull(token, "Token cannot be null");
         grid[coords.row()][coords.col()] = token;
     }
 

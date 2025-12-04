@@ -1,7 +1,6 @@
 package edu.io.token;
 
 import edu.io.Board;
-// Zmiana importu zgodnie z nową strukturą pakietów z PDF
 import edu.io.player.Player;
 
 public class PlayerToken extends Token {

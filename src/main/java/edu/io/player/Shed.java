@@ -1,9 +1,5 @@
 package edu.io.player;
 
-import edu.io.token.PickaxeToken;
-import edu.io.token.SluiceboxToken;
-import edu.io.token.Token;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -41,32 +37,8 @@ public class Shed {
         tools.remove(tool);
     }
 
-
-    public Stack<Tool> tools() {
-        return tools;
-    }
-
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Tool tool : tools) {
-            // 1. Append the Label
-            if (tool instanceof Token t) {
-                sb.append(t.label());
-            } else {
-                sb.append("?");
-            }
-
-            // 2. Append Durability (if the tool has it)
-            // We check specifically for classes that we know have a durability() method
-            if (tool instanceof PickaxeToken p) {
-                sb.append("(").append(p.durability()).append(")");
-            } else if (tool instanceof SluiceboxToken s) {
-                sb.append("(").append(s.durability()).append(")");
-            }
-
-            // 3. Add a space separator
-            sb.append(" ");
-        }
-        return sb.toString();
-    }}
+        return tools.toString();
+    }
+}
