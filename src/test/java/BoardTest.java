@@ -1,5 +1,5 @@
 import edu.io.Board;
-import edu.io.Player;
+import edu.io.player.Player;
 import edu.io.token.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,6 +66,13 @@ class BoardTest {
         Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> board.getAvailableSquare());
+    }
+
+    @Test
+    void throws_on_null_in_placeToken() {
+        Assertions.assertThrows(
+                NullPointerException.class,
+                () -> board.placeToken(1, 1, null));
     }
 
     // -- utils

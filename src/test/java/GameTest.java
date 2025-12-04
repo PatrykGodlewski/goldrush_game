@@ -1,6 +1,6 @@
 import edu.io.Board;
 import edu.io.Game;
-import edu.io.Player;
+import edu.io.player.Player;
 import edu.io.token.PlayerToken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,5 +54,12 @@ class GameTest {
     @Test
     void has_method_start() {
         Assertions.assertDoesNotThrow(() -> Game.class.getMethod("start"));
+    }
+
+    @Test
+    void throws_when_join_null() {
+        Assertions.assertThrows(
+                NullPointerException.class,
+                () -> game.join(null));
     }
 }

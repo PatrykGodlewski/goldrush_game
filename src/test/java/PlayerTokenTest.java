@@ -1,5 +1,5 @@
 import edu.io.Board;
-import edu.io.Player;
+import edu.io.player.Player;
 import edu.io.token.EmptyToken;
 import edu.io.token.PlayerToken;
 import org.junit.jupiter.api.Assertions;
@@ -81,5 +81,21 @@ class PlayerTokenTest {
         Assertions.assertInstanceOf(
                 EmptyToken.class,
                 board.peekToken(pos.col(), pos.row()));
+    }
+
+    @Test
+    void throws_on_null_in_ctor() {
+        Assertions.assertThrows(
+                NullPointerException.class,
+                () -> {new PlayerToken(null, board);});
+        Assertions.assertThrows(
+                NullPointerException.class,
+                () -> {new PlayerToken(player, null);});
+    }
+
+    @Test
+    void throws_on_null_in_move() {
+        Assertions.assertThrows(NullPointerException.class,
+                () -> playerToken.move(null));
     }
 }
