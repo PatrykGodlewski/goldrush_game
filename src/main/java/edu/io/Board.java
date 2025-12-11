@@ -62,11 +62,7 @@ public class Board {
     }
 
     public String display() {
-        return Arrays.stream(grid)
-                .map(row -> Arrays.stream(row)
-                        .map(Token::label)
-                        .collect(Collectors.joining(" ")))
-                .collect(Collectors.joining("\n"));
+        return Arrays.stream(grid).map(row -> Arrays.stream(row).map(Token::label).collect(Collectors.joining(" "))).collect(Collectors.joining("\n"));
     }
 
     public record Coords(int col, int row) {

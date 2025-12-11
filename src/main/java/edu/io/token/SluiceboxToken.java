@@ -4,9 +4,8 @@ import edu.io.player.Tool;
 
 public class SluiceboxToken extends Token implements Tool {
 
-    private double currentGainFactor;
     private static final double DECAY_RATE = 0.04;
-
+    private double currentGainFactor;
     private boolean isWorkingOnTarget = false;
     private boolean isBrokenState = false;
 

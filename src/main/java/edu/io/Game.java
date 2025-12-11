@@ -43,7 +43,7 @@ public class Game {
         scoreLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         frame.add(scoreLabel, BorderLayout.NORTH);
 
-        JLabel toolLabel = new JLabel("Tools [ " + player.shed.toString() + " ]", SwingConstants.CENTER);
+        JLabel toolLabel = new JLabel("Tools [ " + player.shed + " ]", SwingConstants.CENTER);
         toolLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         frame.add(toolLabel, BorderLayout.SOUTH);
 
@@ -79,7 +79,7 @@ public class Game {
         Timer refreshTimer = new Timer(50, e -> {
             updateBoardGrid();
             scoreLabel.setText(getScoreText());
-            toolLabel.setText("Tools [ " + player.shed.toString() + " ]");
+            toolLabel.setText("Tools [ " + player.shed + " ]");
         });
         refreshTimer.start();
     }

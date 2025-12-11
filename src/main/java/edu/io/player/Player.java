@@ -29,8 +29,8 @@ public class Player {
         }
 
         switch (token) {
-            case EmptyToken emptyToken ->vitals.dehydrate(VitalsValues.DEHYDRATION_MOVE);
-            case WaterToken waterToken ->vitals.hydrate(water.amount());;
+            case EmptyToken emptyToken -> vitals.dehydrate(VitalsValues.DEHYDRATION_MOVE);
+            case WaterToken waterToken -> vitals.hydrate(waterToken.amount());
             case GoldToken goldToken -> {
                 vitals.dehydrate(VitalsValues.DEHYDRATION_GOLD);
                 useToolsOnGold(goldToken);
@@ -53,7 +53,7 @@ public class Player {
 
         for (Tool tool : tools) {
             tool.useWith(goldToken).ifWorking(() -> {
-                 double factor = switch (tool) {
+                double factor = switch (tool) {
                     case PickaxeToken p -> p.gainFactor();
                     case SluiceboxToken s -> s.gainFactor();
                     default -> 1.0;

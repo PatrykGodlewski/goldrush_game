@@ -1,7 +1,12 @@
 package edu.io.player;
 
+import edu.io.token.PickaxeToken;
+import edu.io.token.SluiceboxToken;
+import edu.io.token.Token;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Stack;
 
 public class Shed {
@@ -39,6 +44,21 @@ public class Shed {
 
     @Override
     public String toString() {
-        return tools.toString();
+        StringBuilder sb = new StringBuilder();
+        for (Tool tool : tools) {
+            sb.append(switch (tool) {
+                case Token t -> t.label();
+                default -> "?";
+            });
+
+            sb.append(switch (tool) {
+                case PickaxeToken p -> "(" + p.durability() + ")";
+                case SluiceboxToken s -> String.format(Locale.US, "(%.2f)", s.durability());
+                default -> "";
+            });
+
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 }

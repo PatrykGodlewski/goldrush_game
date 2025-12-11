@@ -1,6 +1,7 @@
 package edu.io;
 
 import edu.io.token.EmptyToken;
+
 import java.util.Random;
 
 public class RandomPlacementStrategy implements PlacementStrategy {
