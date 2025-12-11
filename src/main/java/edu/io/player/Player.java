@@ -4,14 +4,17 @@ import edu.io.token.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Player {
     public final Gold gold = new Gold();
     public final Shed shed = new Shed();
+    public final Vitals vitals = new Vitals();
+
     private PlayerToken playerToken;
 
     public void assignToken(PlayerToken token) {
-        this.playerToken = token;
+        this.playerToken = Objects.requireNonNull(token);
     }
 
     public PlayerToken token() {
@@ -19,11 +22,24 @@ public class Player {
     }
 
     public void interactWithToken(Token token) {
+        Objects.requireNonNull(token);
+
+        if (!vitals.isAlive()) {
+            throw new IllegalStateException("Player is dead");
+        }
+
         switch (token) {
-            case GoldToken goldToken -> useToolsOnGold(goldToken);
-            case PickaxeToken pickaxe -> shed.add(pickaxe);
-            case SluiceboxToken sluice -> shed.add(sluice);
-            case AnvilToken anvil -> useAnvil();
+            case EmptyToken emptyToken -> vitals.dehydrate(VitalsValues.DEHYDRATION_MOVE);
+            case WaterToken waterToken -> vitals.hydrate(waterToken.amount());
+            case GoldToken goldToken -> {
+                vitals.dehydrate(VitalsValues.DEHYDRATION_GOLD);
+                useToolsOnGold(goldToken);
+            }
+            case Tool tool -> shed.add(tool);
+            case AnvilToken anvil -> {
+                vitals.dehydrate(VitalsValues.DEHYDRATION_ANVIL);
+                useAnvil();
+            }
             case null, default -> {
             }
         }
@@ -33,8 +49,7 @@ public class Player {
         List<Tool> tools = shed.getAllTools();
         List<Tool> brokenTools = new ArrayList<>();
 
-        // TODO: refactor
-        final double[] totalFactorWrapper = {1.0};
+        final double[] totalMultiplier = {1.0};
 
         for (Tool tool : tools) {
             tool.useWith(goldToken).ifWorking(() -> {
@@ -44,16 +59,14 @@ public class Player {
                     default -> 1.0;
                 };
 
-                // TODO: refactor
-                totalFactorWrapper[0] *= factor;
-
-                if (tool.isBroken()) {
-                    brokenTools.add(tool);
-                }
+                totalMultiplier[0] *= factor;
+            }).ifBroken(() -> {
+                brokenTools.add(tool);
             });
+
         }
 
-        gold.gain(goldToken.amount() * totalFactorWrapper[0]);
+        gold.gain(goldToken.amount() * totalMultiplier[0]);
 
         for (Tool broken : brokenTools) {
             shed.removeTool(broken);
