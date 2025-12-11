@@ -1,6 +1,7 @@
 package edu.io.player;
 
 import edu.io.token.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,22 +28,20 @@ public class Player {
             throw new IllegalStateException("Player is dead");
         }
 
-        if (token instanceof EmptyToken) {
-            vitals.dehydrate(VitalsValues.DEHYDRATION_MOVE);
-        }
-        else if (token instanceof WaterToken water) {
-            vitals.hydrate(water.amount());
-        }
-        else if (token instanceof GoldToken goldToken) {
-            vitals.dehydrate(VitalsValues.DEHYDRATION_GOLD);
-            useToolsOnGold(goldToken);
-        }
-        else if (token instanceof AnvilToken) {
-            vitals.dehydrate(VitalsValues.DEHYDRATION_ANVIL);
-            useAnvil();
-        }
-        else if (token instanceof Tool tool) {
-            shed.add(tool);
+        switch (token) {
+            case EmptyToken emptyToken ->vitals.dehydrate(VitalsValues.DEHYDRATION_MOVE);
+            case WaterToken waterToken ->vitals.hydrate(water.amount());;
+            case GoldToken goldToken -> {
+                vitals.dehydrate(VitalsValues.DEHYDRATION_GOLD);
+                useToolsOnGold(goldToken);
+            }
+            case Tool tool -> shed.add(tool);
+            case AnvilToken anvil -> {
+                vitals.dehydrate(VitalsValues.DEHYDRATION_ANVIL);
+                useAnvil();
+            }
+            case null, default -> {
+            }
         }
     }
 
@@ -54,17 +53,17 @@ public class Player {
 
         for (Tool tool : tools) {
             tool.useWith(goldToken).ifWorking(() -> {
-                double factor = 1.0;
-
-                if (tool instanceof PickaxeToken p) factor = p.gainFactor();
-                else if (tool instanceof SluiceboxToken s) factor = s.gainFactor();
+                 double factor = switch (tool) {
+                    case PickaxeToken p -> p.gainFactor();
+                    case SluiceboxToken s -> s.gainFactor();
+                    default -> 1.0;
+                };
 
                 totalMultiplier[0] *= factor;
+            }).ifBroken(() -> {
+                brokenTools.add(tool);
             });
 
-            if (tool.isBroken()) {
-                brokenTools.add(tool);
-            }
         }
 
         gold.gain(goldToken.amount() * totalMultiplier[0]);
